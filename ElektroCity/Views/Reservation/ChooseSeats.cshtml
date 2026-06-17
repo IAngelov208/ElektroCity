@@ -1,0 +1,301 @@
+﻿@model ElektroCity.Models.Screening
+
+@{
+    ViewData["Title"] = "Избор на места";
+    var occupiedSeats = ViewBag.OccupiedSeats as List<string> ?? new List<string>();
+}
+
+<div class="container text-center my-5 text-light page-layout">
+    <h2 class="text-warning fw-bold text-uppercase tracking-wider">@Model.Movie.Title</h2>
+    <p class="text-muted">Зала: <span class="text-white fw-semibold">@Model.HallName</span> | Час: <span class="text-white fw-semibold">@Model.Showtime.ToString("HH:mm")</span> | Цена: <span class="text-success fw-bold">@Model.TicketPrice лв.</span></p>
+
+    <div class="cinema-screen-container my-5">
+        <div class="cinema-screen mx-auto">ЕКРАН</div>
+        <div class="screen-glow mx-auto"></div>
+    </div>
+
+    <div class="cinema-hall p-4 rounded-4 border border-dark shadow-lg d-inline-block">
+        @for (int row = 1; row <= 8; row++)
+        {
+                    <div class="seat-row d-flex justify-content-center mb-3">
+                        <span class="row-label me-3 text-muted align-self-center fw-bold">Ряд @row</span>
+                @for (int seat = 1; seat <= 12; seat++)
+                {
+                    string seatIdentifier = $"Р{row}-М{seat}";
+                    bool isOccupied = occupiedSeats.Contains(seatIdentifier);
+
+                                    <div class="seat-wrapper">
+                                        <div class="cinema-seat @(isOccupied ? "occupied" : "available")" 
+                                             data-row="@row" 
+                                             data-seat="@seat" 
+                                             data-identifier="@seatIdentifier">
+                                            <div class="seat-back"></div>
+                                            <div class="seat-bottom"></div>
+                                            <div class="armrest left"></div>
+                                            <div class="armrest right"></div>
+                                        </div>
+                                    </div>
+                }
+                    </div>
+        }
+    </div>
+
+    <div class="d-flex justify-content-center gap-4 my-4 fs-6 text-uppercase tracking-wide font-monospace">
+        <div><span class="legend-box available-legend"></span> Свободно</div>
+        <div><span class="legend-box selected-legend"></span> Вашето място</div>
+        <div><span class="legend-box occupied-legend"></span> Заето</div>
+    </div>
+
+    <div class="booking-panel my-4 p-4 rounded-4 shadow-lg d-inline-block" id="animated-panel">
+        <h5 class="mb-2 text-muted fw-light">Избрани места: <span id="selected-seats-text" class="text-warning fw-bold">Няма</span></h5>
+        <h4 class="mb-4 text-white fw-normal">Обща сума: <span id="total-price" class="text-success fw-bold font-monospace">0.00</span> лв.</h4>
+        <button id="btn-confirm" class="btn btn-lg w-100 fw-bold text-uppercase shadow static-btn">Потвърди резервацията</button>
+    </div>
+</div>
+
+<div class="modal fade" id="thankYouModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content custom-dark-modal border border-secondary rounded-4 shadow-lg">
+            <div class="modal-header border-0 pb-0 justify-content-center mt-3">
+                <h3 class="modal-title text-warning fw-black tracking-wide" id="thankYouModalLabel">🎉 УСПЕШНА РЕЗЕРВАЦИЯ!</h3>
+            </div>
+            <div class="modal-body text-center p-4">
+                <p class="fs-5 fw-semibold mb-2 text-white">Благодарим ви, че избрахте ElektroCity!</p>
+                <p class="text-muted small">Вашите места бяха успешно запазени в системата ни. Можете да ги откриете в профила си.</p>
+            </div>
+            <div class="modal-footer border-0 pb-4 pt-0 d-flex justify-content-center">
+                <button type="button" class="btn btn-warning modal-redirect-btn fw-bold px-5 py-3 text-uppercase shadow-lg" id="btn-modal-redirect">
+                    Към моите резервации
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #0b0b0b;
+    }
+
+    /* ЕКРАН И НЕОНОВО ИЗЛЪЧВАНЕ НАДОЛУ */
+    .cinema-screen-container {
+        position: relative;
+        perspective: 400px;
+    }
+    .cinema-screen {
+        width: 70%;
+        background: linear-gradient(to bottom, #ffffff 0%, #666666 100%);
+        color: #000 !important;
+        font-weight: 900;
+        letter-spacing: 12px;
+        padding: 8px 0;
+        border-radius: 50% / 10px 10px 120px 120px;
+        box-shadow: 0 -5px 30px rgba(255, 255, 255, 0.3);
+        transform: rotateX(-5deg);
+    }
+    .screen-glow {
+        width: 65%;
+        height: 60px;
+        background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+        margin-top: -5px;
+    }
+
+    .cinema-hall {
+        background-color: #111111;
+        border: 1px solid #1a1a1a !important;
+    }
+
+    .seat-wrapper {
+        margin: 0 6px;
+    }
+
+    /* СЕДАЛКИ С ПЛАВНИ ПРЕХОДИ */
+    .cinema-seat {
+        position: relative;
+        width: 34px;
+        height: 36px;
+        cursor: pointer;
+        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+    }
+
+    .seat-back {
+        position: absolute;
+        top: 0; left: 4px; right: 4px; height: 22px;
+        border-radius: 6px 6px 3px 3px;
+    }
+
+    .seat-bottom {
+        position: absolute;
+        bottom: 2px; left: 2px; right: 2px; height: 14px;
+        border-radius: 3px 3px 6px 6px;
+    }
+
+    .armrest {
+        position: absolute;
+        top: 10px; bottom: 4px; width: 3px;
+        background-color: #1f1f1f;
+        border-radius: 1px;
+    }
+    .armrest.left { left: 0; }
+    .armrest.right { right: 0; }
+
+    /* ЦВЕТОВЕ НА СЕДАЛКИТЕ */
+    .cinema-seat.available .seat-back, .cinema-seat.available .seat-bottom { background-color: #333333; border: 1px solid #444444; }
+
+    .cinema-seat.available:hover {
+        transform: translateY(-5px) scale(1.15);
+        box-shadow: 0 10px 20px rgba(255, 204, 0, 0.35);
+    }
+    .cinema-seat.available:hover .seat-back, .cinema-seat.available:hover .seat-bottom {
+        background-color: #ffe066;
+        border-color: #ffffff;
+    }
+
+    .cinema-seat.selected {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px #ffcc00;
+    }
+    .cinema-seat.selected .seat-back, .cinema-seat.selected .seat-bottom {
+        background-color: #ffcc00 !important;
+        border-color: #ffffff;
+    }
+
+    .cinema-seat.occupied { cursor: not-allowed; }
+    .cinema-seat.occupied .seat-back, .cinema-seat.occupied .seat-bottom { background-color: #b33939; border-color: #5c1d1d; }
+
+    /* ЛЕГЕНДА СТИЛОВЕ */
+    .legend-box { display: inline-block; width: 16px; height: 16px; border-radius: 4px; vertical-align: middle; margin-right: 6px; }
+    .available-legend { background-color: #333333; border: 1px solid #444444; }
+    .selected-legend { background-color: #ffcc00; box-shadow: 0 0 8px #ffcc00; }
+    .occupied-legend { background-color: #b33939; }
+    .row-label { width: 65px; text-align: left; letter-spacing: 1px; }
+
+    /* ДОЛЕН БУКИНГ ПАНЕЛ */
+    #animated-panel {
+        min-width: 380px;
+        background: #141414;
+        border: 1px solid #222222;
+        transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.3s ease;
+    }
+
+    #animated-panel.active-panel {
+        border-color: rgba(255, 204, 0, 0.4);
+        box-shadow: 0 15px 40px rgba(255, 204, 0, 0.08);
+        transform: scale(1.02);
+    }
+
+    /* КРАСИВИ БУТОНИ С АНИМАЦИЯ */
+    .static-btn {
+        background-color: #222222;
+        color: #555555;
+        border: 1px solid #333333;
+        pointer-events: none;
+        border-radius: 12px;
+        padding: 12px;
+        transition: all 0.4s ease;
+    }
+
+    .pulse-btn {
+        background: linear-gradient(135deg, #ffcc00 0%, #ffaa00 100%) !important;
+        color: #000000 !important;
+        border: none !important;
+        border-radius: 12px;
+        padding: 12px;
+        cursor: pointer !important;
+        animation: neonPulse 2s infinite;
+        transition: all 0.3s ease;
+    }
+    .pulse-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 204, 0, 0.4) !important;
+    }
+
+    /* ФУТУРИСТИЧЕН ДИЗАЙН ЗА ПОП-ЪП-А */
+    .custom-dark-modal {
+        background-color: #121212 !important;
+        border: 1px solid #262626 !important;
+    }
+    .modal-redirect-btn {
+        background: linear-gradient(135deg, #ffcc00 0%, #ffaa00 100%) !important;
+        color: #000000 !important;
+        border-radius: 10px;
+        border: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .modal-redirect-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(255, 204, 0, 0.4);
+    }
+
+    @@keyframes neonPulse {
+        0% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.4); }
+        70% { box-shadow: 0 0 0 15px rgba(255, 204, 0, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); }
+    }
+</style>
+
+<script>
+    const pricePerSeat = parseFloat("@Model.TicketPrice.ToString(System.Globalization.CultureInfo.InvariantCulture)");
+    let selectedSeats = [];
+    const screeningId = @Model.Id;
+
+    const confirmBtn = document.getElementById('btn-confirm');
+    const animatedPanel = document.getElementById('animated-panel');
+
+    document.querySelectorAll('.cinema-seat.available').forEach(seat => {
+        seat.addEventListener('click', () => {
+            seat.classList.toggle('selected');
+            const seatId = seat.dataset.identifier;
+
+            if (seat.classList.contains('selected')) {
+                selectedSeats.push(seatId);
+            } else {
+                selectedSeats = selectedSeats.filter(s => s !== seatId);
+            }
+
+            document.getElementById('selected-seats-text').innerText = selectedSeats.length > 0 ? selectedSeats.join(', ') : 'Няма';
+            document.getElementById('total-price').innerText = (selectedSeats.length * pricePerSeat).toFixed(2);
+
+            if (selectedSeats.length > 0) {
+                confirmBtn.classList.remove('static-btn');
+                confirmBtn.classList.add('pulse-btn');
+                animatedPanel.classList.add('active-panel');
+            } else {
+                confirmBtn.classList.remove('pulse-btn');
+                confirmBtn.classList.add('static-btn');
+                animatedPanel.classList.remove('active-panel');
+            }
+        });
+    });
+
+    confirmBtn.addEventListener('click', () => {
+        if (selectedSeats.length === 0) return;
+
+        const totalPrice = (selectedSeats.length * pricePerSeat).toFixed(2);
+        const seatsString = selectedSeats.join(', ');
+
+        fetch('/Reservation/BookSeats', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `screeningId=${screeningId}&seats=${encodeURIComponent(seatsString)}&totalPrice=${totalPrice}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Извикваме модала по неговия ID
+                var thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'));
+                thankYouModal.show();
+
+                // ВАЖНО: Пренасочваме към Action метода в контролера, а не към файла директно!
+                document.getElementById('btn-modal-redirect').addEventListener('click', () => {
+                    window.location.href = '/Reservation/MyReservations';
+                });
+            } else {
+                alert(data.message);
+                if (data.isNotLogged) {
+                    window.location.href = "/Account/Login";
+                }
+            }
+        });
+    });
+</script>

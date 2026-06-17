@@ -1,7 +1,22 @@
+
+using Microsoft.EntityFrameworkCore;
+using ElektroCity.Data;
+
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSession();
+
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? "Server=(localdb)\\mssqllocaldb;Database=CinemaCityDb;Trusted_Connection=True;MultipleActiveResultSets=true";
+
+builder.Services.AddDbContext<ElektroCity.Data.ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -17,6 +32,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthorization();
 

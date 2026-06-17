@@ -1,8 +1,88 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<ElektroCity.Models.Movie>
+
+@{
+    ViewData["Title"] = "Начало - Cinema City";
+    // Взимаме първите 2 филма като "Препоръчани"
+    var recommendedMovies = Model.Take(2);
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container text-light my-5 fade-in-section">
+
+    @if (recommendedMovies.Any())
+    {
+                <div class="mb-5">
+                    <h2 class="fw-bold text-uppercase mb-4" style="color: #ffcc00; border-left: 5px solid #ffcc00; padding-left: 15px; letter-spacing: 1px;">
+                        ⭐ Препоръчани от Cinema City
+                    </h2>
+                    <div class="row row-cols-1 row-cols-md-2 g-4">
+                @foreach (var movie in recommendedMovies)
+                {
+                                    <div class="col">
+                                        <div class="card h-100 bg-dark border-secondary shadow-lg movie-card text-white position-relative overflow-hidden" style="border-width: 2px;">
+                                            <div class="recommended-badge">🔥 ТОП ХИТ</div>
+
+                                            <div class="row g-0 h-100">
+                                                <div class="col-md-5">
+                                                    <img src="@movie.ImageUrl" class="img-fluid h-100 w-100" alt="@movie.Title" style="object-fit: cover; min-height: 280px;">
+                                                </div>
+                                                <div class="col-md-7 d-flex flex-column p-3">
+                                                    <h4 class="card-title fw-bold text-warning">@movie.Title</h4>
+                                                    <p class="text-muted small mb-1">Жанр: <span class="text-light">@movie.Genre</span></p>
+                                                    <p class="text-muted small mb-3">Времетраене: <span class="text-light">@movie.DurationMinutes мин.</span></p>
+                                                    <p class="card-text text-white-50 small flex-grow-1">@movie.Description</p>
+
+                                                    <div class="mt-3">
+                                                        <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id" class="btn w-100 fw-bold text-uppercase" style="background-color: #ffcc00; color: #000; letter-spacing: 1px;">
+                                                            Бърза Резервация
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                }
+                    </div>
+                </div>
+                <hr class="border-secondary my-5">
+    }
+
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-uppercase" style="color: #ffffff; letter-spacing: 2px;">Програма на филмите</h1>
+        <p class="lead text-muted">Изберете прожекция и купете билет за секунди</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+                <div class="alert alert-warning text-center" role="alert">
+                    В момента няма добавени филми. Отидете в <a href="/Movies" class="alert-link">Админ панела</a>, за да добавите!
+                </div>
+    }
+    else
+    {
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var movie in Model)
+            {
+                                <div class="col">
+                                    <div class="card h-100 bg-dark border-secondary shadow-lg movie-card text-white position-relative">
+                                        <img src="@movie.ImageUrl" class="card-img-top img-fluid" alt="@movie.Title" style="height: 350px; object-fit: cover;">
+
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title fw-bold text-truncate">@movie.Title</h5>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="badge bg-secondary">@movie.Genre</span>
+                                                <span class="text-muted small">⏱️ @movie.DurationMinutes мин.</span>
+                                            </div>
+                                            <p class="card-text text-white-50 text-truncate-3 small">@movie.Description</p>
+
+                                            <div class="mt-auto">
+                                                <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id" class="btn w-100 fw-bold" style="background-color: #444; color: #fff; border: 1px solid #ffcc00; transition: 0.3s;" onmouseover="this.style.backgroundColor='#ffcc00'; this.style.color='#000'" onmouseout="this.style.backgroundColor='#444'; this.style.color='#fff'">
+                                                    Купи Билет
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+            }
+                </div>
+    }
 </div>

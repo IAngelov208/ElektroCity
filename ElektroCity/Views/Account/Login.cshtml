@@ -1,0 +1,65 @@
+﻿@model ElektroCity.Models.User
+
+<div class="d-flex justify-content-center align-items-center my-5 animate-page">
+    <div class="login-box p-5 rounded border border-secondary shadow-lg bg-black text-light text-center" style="max-width: 450px; width: 100%;">
+        <h2 class="text-warning fw-bold text-uppercase mb-4 neon-text">ElektroCity</h2>
+        <h5 class="text-muted mb-4">Вход в акаунта</h5>
+
+        <form asp-action="Login" method="post" class="text-start">
+            <div class="mb-3">
+                <label class="form-label text-muted small">Имейл адрес</label>
+                <input type="email" name="Email" class="form-control custom-input" required placeholder="name@example.com" />
+            </div>
+            <div class="mb-4">
+                <label class="form-label text-muted small">Парола</label>
+                <input type="password" name="Password" class="form-control custom-input" required placeholder="••••••••" />
+            </div>
+
+            <button type="submit" class="btn btn-lg w-100 fw-bold text-uppercase mb-3 submit-neon-btn">Влез</button>
+        </form>
+
+        <p class="text-muted mt-3 mb-0 small">Нямате акаунт? <a asp-action="Register" class="text-warning text-decoration-none fw-bold">Регистрирайте се тук</a></p>
+    </div>
+</div>
+
+<style>
+    .animate-page {
+        animation: scaleUp 0.35s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        opacity: 0;
+    }
+
+    @@keyframes scaleUp {
+        from { transform: scale(0.93); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    .login-box {
+        background: linear-gradient(145deg, #0b0b10, #020205) !important;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+    }
+    .neon-text {
+        text-shadow: 0 0 10px rgba(255, 204, 0, 0.4);
+        letter-spacing: 2px;
+    }
+    .custom-input {
+        background-color: #12121a !important;
+        border: 1px solid #333 !important;
+        color: #fff !important;
+        padding: 11px;
+        transition: all 0.2s ease;
+    }
+    .custom-input:focus {
+        border-color: #ffcc00 !important;
+        box-shadow: 0 0 8px rgba(255, 204, 0, 0.25) !important;
+    }
+    .submit-neon-btn {
+        background-color: #ffcc00;
+        color: #000;
+        transition: all 0.2s ease;
+    }
+    .submit-neon-btn:hover {
+        background-color: #fff;
+        box-shadow: 0 0 12px #ffcc00;
+        transform: translateY(-1px);
+    }
+</style>

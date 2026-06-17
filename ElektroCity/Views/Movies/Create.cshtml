@@ -1,0 +1,69 @@
+﻿@model ElektroCity.Models.Movie
+
+@{
+    ViewData["Title"] = "Добави филм";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card border-0 shadow-lg bg-dark text-white mb-5" style="border-radius: 15px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);">
+                <div class="card-body p-5">
+
+                    <h2 class="text-center mb-4 text-warning fw-bold text-uppercase" style="letter-spacing: 1px;">Добави нов филм</h2>
+                    <hr class="border-secondary mb-4">
+
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Title" class="form-label text-light fw-semibold">Заглавие на филма</label>
+                            <input asp-for="Title" class="form-control bg-secondary text-white border-0 py-2 shadow-sm" placeholder="Въведете заглавие..." style="background-color: #2b3035 !important;" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Description" class="form-label text-light fw-semibold">Описание</label>
+                            <textarea asp-for="Description" class="form-control bg-secondary text-white border-0 py-2 shadow-sm" rows="3" placeholder="Кратко резюме на филма..." style="background-color: #2b3035 !important;"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                <label asp-for="Genre" class="form-label text-light fw-semibold">Жанр</label>
+                                <input asp-for="Genre" class="form-control bg-secondary text-white border-0 py-2 shadow-sm" placeholder="Напр. Екшън, Комедия" style="background-color: #2b3035 !important;" />
+                                <span asp-validation-for="Genre" class="text-danger small"></span>
+                            </div>
+
+                            <div class="form-group col-md-6 mb-3">
+                                <label asp-for="DurationMinutes" class="form-label text-light fw-semibold">Времетраене (минути)</label>
+                                <input asp-for="DurationMinutes" class="form-control bg-secondary text-white border-0 py-2 shadow-sm" type="number" placeholder="Напр. 120" style="background-color: #2b3035 !important;" />
+                                <span asp-validation-for="DurationMinutes" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="ImageUrl" class="form-label text-light fw-semibold">Линк към постер (Изображение)</label>
+                            <input asp-for="ImageUrl" class="form-control bg-secondary text-white border-0 py-2 shadow-sm" placeholder="https://link-to-image.com/poster.jpg" style="background-color: #2b3035 !important;" />
+                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-warning btn-lg fw-bold text-dark text-uppercase shadow-sm py-2">Създай</button>
+                            <a asp-action="Index" class="btn btn-link text-muted mt-2 text-decoration-none text-center btn-sm">← Назад към списъка</a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

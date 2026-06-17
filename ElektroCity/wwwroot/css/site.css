@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -19,4 +19,51 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+/* Професионален ефект за изскачане (Pop-out) на картите */
+.movie-card {
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+    cursor: pointer;
+}
+
+    /* Когато мишката мине над филма */
+    .movie-card:hover {
+        transform: translateY(-12px) scale(1.03); /* Изскача нагоре и леко се уголемява */
+        box-shadow: 0 15px 30px rgba(255, 204, 0, 0.35) !important; /* Силно златно сияние */
+        border-color: #ffcc00 !important; /* Рамката става златна */
+    }
+
+/* Анимация за плавно появяване на целия сайт при зареждане (Fade-in) */
+.fade-in-section {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Стилизиране на баджовете за Препоръчани филми */
+.recommended-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: #ffcc00;
+    color: #000;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    z-index: 10;
 }

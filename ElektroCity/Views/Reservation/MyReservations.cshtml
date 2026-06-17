@@ -1,0 +1,60 @@
+﻿@model IEnumerable<ElektroCity.Models.Reservation>
+
+@{
+    ViewData["Title"] = "Моите Резервации";
+}
+
+<div class="container my-5 text-light">
+    <h2 class="text-warning text-center fw-bold text-uppercase mb-5 border-bottom border-secondary pb-3" style="letter-spacing: 2px;">
+        ⚡ Твоите Електро Резервации ⚡
+    </h2>
+
+    @if (!Model.Any())
+    {
+            <div class="text-center my-5 p-5 bg-dark rounded border border-secondary shadow">
+                <h4 class="text-muted mb-4">Все още нямаш направени резервации.</h4>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-lg fw-bold text-uppercase px-4" style="background-color: #ffcc00; color: #000;">Избери Филм</a>
+            </div>
+    }
+    else
+    {
+            <div class="row g-4">
+            @foreach (var res in Model)
+            {
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card bg-black border border-secondary rounded shadow-lg h-100 reservation-card">
+                                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <h4 class="card-title text-warning fw-bold mb-3 text-uppercase">@res.Screening?.Movie?.Title</h4>
+                                        <p class="mb-2"><i class="text-muted">Зала:</i> <span class="badge bg-secondary text-white">@res.Screening?.HallName</span></p>
+                                        <p class="mb-2">
+                                            <i class="text-muted">Дата и Час:</i> 
+                                            <span class="text-white fw-bold d-block fs-5 text-success">
+                                                📅 @res.Screening?.Showtime.ToString("dd.MM.yyyy г. в HH:mm ч.")
+                                            </span>
+                                        </p>
+                                        <p class="mb-3"><i class="text-muted">Места:</i> <span class="text-info fw-bold">@res.ChosenSeats</span></p>
+                                    </div>
+                                    <div class="border-top border-secondary pt-3 mt-3 d-flex justify-content-between align-items-center">
+                                        <span class="text-muted small">Запазено на: @res.ReservedAt.ToString("dd.MM HH:mm")</span>
+                                        <h5 class="text-success fw-bold m-0">@res.TotalPrice.ToString("0.00") лв.</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            }
+            </div>
+    }
+</div>
+
+<style>
+    .reservation-card {
+        background: linear-gradient(145deg, #0d0d15, #020205);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .reservation-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 25px rgba(255, 204, 0, 0.15);
+        border-color: #ffcc00 !important;
+    }
+</style>

@@ -1,0 +1,83 @@
+﻿@model ElektroCity.Models.Screening
+
+@{
+    ViewData["Title"] = "Добави Прожекция";
+}
+<div asp-validation-summary="All" class="text-danger fw-bold mb-3"></div>
+<div class="container my-5 text-white fade-in">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="form-container p-4 rounded-4 shadow-lg">
+                <h2 class="text-center text-warning text-uppercase fw-bold mb-4 tracking-wider">
+                    🍿 Добави Прожекция
+                </h2>
+
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="MovieId" class="form-label text-muted small text-uppercase fw-semibold">Избери Филм</label>
+                        <select asp-for="MovieId" class="form-select custom-input" asp-items="ViewBag.MovieId">
+                            <option value="">-- Изберете филм от списъка --</option>
+                        </select>
+                        <span asp-validation-for="MovieId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Showtime" class="form-label text-muted small text-uppercase fw-semibold">Дата и Час на прожекцията</label>
+                        <input asp-for="Showtime" type="datetime-local" class="form-control custom-input" />
+                        <span asp-validation-for="Showtime" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="HallName" class="form-label text-muted small text-uppercase fw-semibold">Зала (напр. Зала 1 (IMAX))</label>
+                        <input asp-for="HallName" class="form-control custom-input" placeholder="Въведете зала..." />
+                        <span asp-validation-for="HallName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="TicketPrice" class="form-label text-muted small text-uppercase fw-semibold">Цена на билет (лв.)</label>
+                        <input asp-for="TicketPrice" type="number" step="0.01" class="form-control custom-input" placeholder="0.00" />
+                        <span asp-validation-for="TicketPrice" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning fw-bold text-dark py-2 rounded-pill shadow">
+                            СЪЗДАЙ ПРОЖЕКЦИЯ
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #0b0c10 !important;
+    }
+
+    .form-container {
+        background: linear-gradient(145deg, #11141a, #161a23);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    }
+
+    .custom-input {
+        background-color: #1a1f2c !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        border-radius: 8px;
+        padding: 10px 12px;
+    }
+
+    .custom-input:focus {
+        border-color: #ffcc00 !important;
+        box-shadow: 0 0 8px rgba(255, 204, 0, 0.2) !important;
+    }
+
+    select.custom-input option {
+        background-color: #11141a;
+        color: white;
+    }
+</style>
