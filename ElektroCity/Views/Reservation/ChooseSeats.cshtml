@@ -5,9 +5,21 @@
     var occupiedSeats = ViewBag.OccupiedSeats as List<string> ?? new List<string>();
 }
 
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1100;">
+    <div id="loginToast" class="toast align-items-center text-white bg-dark border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true" style="border-left: 4px solid #ffcc00 !important; border-radius: 10px;">
+        <div class="d-flex">
+            <div class="toast-body p-3">
+                <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i> 
+                <span id="toast-message">Трябва да сте влезли в акаунта си, за да направите резервация!</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white m-auto me-2" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <div class="container text-center my-5 text-light page-layout">
     <h2 class="text-warning fw-bold text-uppercase tracking-wider">@Model.Movie.Title</h2>
-    <p class="text-muted">Зала: <span class="text-white fw-semibold">@Model.HallName</span> | Час: <span class="text-white fw-semibold">@Model.Showtime.ToString("HH:mm")</span> | Цена: <span class="text-success fw-bold">@Model.TicketPrice лв.</span></p>
+    <p class="text-muted">Зала: <span class="text-white fw-semibold">@Model.HallName</span> | Час: <span class="text-white fw-semibold">@Model.Showtime.ToString("HH:mm")</span> | Цена: <span class="text-success fw-bold">€@Model.TicketPrice.ToString("0.00")</span></p>
 
     <div class="cinema-screen-container my-5">
         <div class="cinema-screen mx-auto">ЕКРАН</div>
@@ -17,26 +29,26 @@
     <div class="cinema-hall p-4 rounded-4 border border-dark shadow-lg d-inline-block">
         @for (int row = 1; row <= 8; row++)
         {
-                    <div class="seat-row d-flex justify-content-center mb-3">
-                        <span class="row-label me-3 text-muted align-self-center fw-bold">Ряд @row</span>
+                        <div class="seat-row d-flex justify-content-center mb-3">
+                            <span class="row-label me-3 text-muted align-self-center fw-bold">Ряд @row</span>
                 @for (int seat = 1; seat <= 12; seat++)
                 {
                     string seatIdentifier = $"Р{row}-М{seat}";
                     bool isOccupied = occupiedSeats.Contains(seatIdentifier);
 
-                                    <div class="seat-wrapper">
-                                        <div class="cinema-seat @(isOccupied ? "occupied" : "available")" 
-                                             data-row="@row" 
-                                             data-seat="@seat" 
-                                             data-identifier="@seatIdentifier">
-                                            <div class="seat-back"></div>
-                                            <div class="seat-bottom"></div>
-                                            <div class="armrest left"></div>
-                                            <div class="armrest right"></div>
-                                        </div>
-                                    </div>
+                                            <div class="seat-wrapper">
+                                                <div class="cinema-seat @(isOccupied ? "occupied" : "available")" 
+                                                     data-row="@row" 
+                                                     data-seat="@seat" 
+                                                     data-identifier="@seatIdentifier">
+                                                    <div class="seat-back"></div>
+                                                    <div class="seat-bottom"></div>
+                                                    <div class="armrest left"></div>
+                                                    <div class="armrest right"></div>
+                                                </div>
+                                            </div>
                 }
-                    </div>
+                        </div>
         }
     </div>
 
@@ -48,7 +60,7 @@
 
     <div class="booking-panel my-4 p-4 rounded-4 shadow-lg d-inline-block" id="animated-panel">
         <h5 class="mb-2 text-muted fw-light">Избрани места: <span id="selected-seats-text" class="text-warning fw-bold">Няма</span></h5>
-        <h4 class="mb-4 text-white fw-normal">Обща сума: <span id="total-price" class="text-success fw-bold font-monospace">0.00</span> лв.</h4>
+        <h4 class="mb-4 text-white fw-normal">Обща сума: <span id="total-price" class="text-success fw-bold font-monospace">0.00</span> €.</h4>
         <button id="btn-confirm" class="btn btn-lg w-100 fw-bold text-uppercase shadow static-btn">Потвърди резервацията</button>
     </div>
 </div>
@@ -227,6 +239,7 @@
         box-shadow: 0 5px 20px rgba(255, 204, 0, 0.4);
     }
 
+    /* ФИКС С ДВОЙНО '@@' ЗА RAZOR СИНТАКСИС */
     @@keyframes neonPulse {
         0% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.4); }
         70% { box-shadow: 0 0 0 15px rgba(255, 204, 0, 0); }
@@ -282,18 +295,22 @@
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                // Извикваме модала по неговия ID
                 var thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'));
                 thankYouModal.show();
 
-                // ВАЖНО: Пренасочваме към Action метода в контролера, а не към файла директно!
                 document.getElementById('btn-modal-redirect').addEventListener('click', () => {
                     window.location.href = '/Reservation/MyReservations';
                 });
             } else {
-                alert(data.message);
+                document.getElementById('toast-message').innerText = data.message;
+                var loginToastEl = document.getElementById('loginToast');
+                var toast = new bootstrap.Toast(loginToastEl, { delay: 3500 });
+                toast.show();
+
                 if (data.isNotLogged) {
-                    window.location.href = "/Account/Login";
+                    loginToastEl.addEventListener('hidden.bs.toast', () => {
+                        window.location.href = "/Account/Login";
+                    });
                 }
             }
         });

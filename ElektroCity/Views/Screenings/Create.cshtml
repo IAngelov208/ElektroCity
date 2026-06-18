@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Добави Прожекция";
 }
-<div asp-validation-summary="All" class="text-danger fw-bold mb-3"></div>
+
 <div class="container my-5 text-white fade-in">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
@@ -12,9 +12,9 @@
                     🍿 Добави Прожекция
                 </h2>
 
-                <form asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                <div asp-validation-summary="All" class="text-danger fw-bold mb-3"></div>
 
+                <form asp-action="Create">
                     <div class="mb-3">
                         <label asp-for="MovieId" class="form-label text-muted small text-uppercase fw-semibold">Избери Филм</label>
                         <select asp-for="MovieId" class="form-select custom-input" asp-items="ViewBag.MovieId">
@@ -36,8 +36,8 @@
                     </div>
 
                     <div class="mb-4">
-                        <label asp-for="TicketPrice" class="form-label text-muted small text-uppercase fw-semibold">Цена на билет (лв.)</label>
-                        <input asp-for="TicketPrice" type="number" step="0.01" class="form-control custom-input" placeholder="0.00" />
+                        <label asp-for="TicketPrice" class="form-label text-muted small text-uppercase fw-semibold">Цена на билет (€)</label>
+                        <input asp-for="TicketPrice" type="number" step="0.01" class="form-control custom-input" placeholder="0.00 €" />
                         <span asp-validation-for="TicketPrice" class="text-danger small"></span>
                     </div>
 
